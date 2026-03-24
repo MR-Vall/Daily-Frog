@@ -6,7 +6,9 @@ Automatically posts the latest photo from [@frogpicturesdaily](https://www.insta
  
 ## How it works
  
-A GitHub Actions workflow runs once a day on a schedule. It fetches the latest post from the Instagram profile and sends it to your Discord channel as an embed. If there's no new post since the last run, it does nothing.
+A GitHub Actions workflow runs once a day on a schedule. It reads the Instagram profile's RSS feed (via [rss.app](https://rss.app)), grabs the latest post, and sends it to your Discord channel as an embed. If there's no new post since the last run, it does nothing.
+ 
+No Instagram account or login required.
  
 ---
  
@@ -14,7 +16,7 @@ A GitHub Actions workflow runs once a day on a schedule. It fetches the latest p
  
 ### 1. Fork or clone this repo
  
-Create a new GitHub repository and add the two files:
+Create a new GitHub repository and add the files:
  
 ```
 check_frog.py
@@ -27,6 +29,8 @@ check_frog.py
 2. Click **Edit Channel → Integrations → Webhooks → New Webhook**
 3. Give it a name (e.g. "Frog Bot") and copy the webhook URL
  
+> 💡 Webhooks only work in server channels, not DMs. If you want it to feel private, create a personal Discord server just for yourself.
+ 
 ### 3. Add the webhook URL as a GitHub secret
  
 1. In your GitHub repo, go to **Settings → Secrets and variables → Actions**
@@ -36,7 +40,7 @@ check_frog.py
  
 ### 4. Done
  
-The bot will now run automatically every day at **9:00 AM UTC**. You can also trigger it manually at any time from the **Actions** tab in your repo by clicking **Run workflow**.
+The bot will now run automatically every day at **9:00 AM UTC (10:00 AM Copenhagen time)**. You can also trigger it manually at any time from the **Actions** tab in your repo by clicking **Run workflow**.
  
 ---
  
@@ -44,7 +48,7 @@ The bot will now run automatically every day at **9:00 AM UTC**. You can also tr
  
 | File | Description |
 |------|-------------|
-| `check_frog.py` | Fetches the latest Instagram post and sends it to Discord |
+| `check_frog.py` | Reads the RSS feed and posts the latest photo to Discord |
 | `.github/workflows/frog.yml` | GitHub Actions workflow that runs the script daily |
 | `last_post.json` | Auto-generated — tracks the last posted photo to avoid duplicates |
  
@@ -55,7 +59,7 @@ The bot will now run automatically every day at **9:00 AM UTC**. You can also tr
 The schedule is set in `frog.yml`:
  
 ```yaml
-- cron: '0 9 * * *'  # Every day at 9:00 AM UTC
+- cron: '0 9 * * *'  # Every day at 9:00 AM UTC (10:00 AM Copenhagen)
 ```
  
 Use [crontab.guru](https://crontab.guru) to help write a different schedule if needed.
@@ -66,13 +70,12 @@ Use [crontab.guru](https://crontab.guru) to help write a different schedule if n
  
 Installed automatically by the workflow — nothing to install manually.
  
-- [instaloader](https://instaloader.github.io/) — fetches Instagram posts
-- [requests](https://requests.readthedocs.io/) — sends the Discord webhook
+- [requests](https://requests.readthedocs.io/) — fetches the RSS feed and sends the Discord webhook
  
 ---
  
 ## Notes
  
-- This uses `instaloader` to fetch public Instagram posts. It does not require an Instagram account.
-- The script only posts once per day even if the workflow runs multiple times.
+- The RSS feed is provided by [rss.app](https://rss.app) and does not require an Instagram account.
+- The script only posts if there is a new photo since the last run, so you will never get duplicates.
 - Webhooks can only post to server channels, not Discord DMs. If you want it to feel private, create a personal Discord server and point the webhook there.
