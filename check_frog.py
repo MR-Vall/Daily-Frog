@@ -43,6 +43,7 @@ def send_to_discord(post):
 
 def main():
     L = instaloader.Instaloader()
+    L.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
     profile = instaloader.Profile.from_username(L.context, INSTAGRAM_USER)
 
     last_shortcode = load_last_shortcode()
