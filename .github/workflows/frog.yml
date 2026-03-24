@@ -25,13 +25,11 @@ jobs:
           python-version: '3.11'
  
       - name: Install dependencies
-        run: pip install instaloader requests
+        run: pip install requests
  
       - name: Run frog checker
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          INSTAGRAM_USER: ${{ secrets.INSTAGRAM_USER }}
-          INSTAGRAM_PASS: ${{ secrets.INSTAGRAM_PASS }}
         run: python check_frog.py
  
       - name: Save last post state
