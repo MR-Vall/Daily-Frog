@@ -5,6 +5,8 @@ import os
 
 INSTAGRAM_USER = "frogpicturesdaily"
 DISCORD_WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
+INSTAGRAM_USERNAME = os.environ["INSTAGRAM_USER"]
+INSTAGRAM_PASSWORD = os.environ["INSTAGRAM_PASS"]
 LAST_POST_FILE = "last_post.json"
 
 
