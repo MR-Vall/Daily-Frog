@@ -1,14 +1,14 @@
 # 🐸 Daily Frog Discord Bot
  
-Automatically posts the latest photo from [@frogpicturesdaily](https://www.instagram.com/frogpicturesdaily/) to a Discord channel every day via a webhook. Runs entirely on GitHub Actions — no server or PC required.
+Automatically posts frog pictures to a Discord channel every day via a webhook. Pulls from both [@frogpicturesdaily](https://www.instagram.com/frogpicturesdaily/) on Instagram and [@frogofthe](https://x.com/frogofthe) on X, working through posts oldest to newest. Runs entirely on GitHub Actions — no server or PC required.
  
 ---
  
 ## How it works
  
-A GitHub Actions workflow runs once a day on a schedule. It reads the Instagram profile's RSS feed (via [rss.app](https://rss.app)), grabs the latest post, and sends it to your Discord channel as an embed. If there's no new post since the last run, it does nothing.
+A GitHub Actions workflow runs once a day on a schedule. It reads both RSS feeds, merges all posts sorted oldest to newest, and sends the next one in the queue to your Discord channel as an embed. The footer of each post shows which account it came from. If all posts have been sent it waits until new ones appear.
  
-No Instagram account or login required.
+No Instagram or X account required.
  
 ---
  
@@ -48,9 +48,20 @@ The bot will now run automatically every day at **9:00 AM UTC (10:00 AM Copenhag
  
 | File | Description |
 |------|-------------|
-| `check_frog.py` | Reads the RSS feed and posts the latest photo to Discord |
+| `check_frog.py` | Reads both RSS feeds and posts the next frog in the queue to Discord |
 | `.github/workflows/frog.yml` | GitHub Actions workflow that runs the script daily |
 | `last_post.json` | Auto-generated — tracks the last posted photo to avoid duplicates |
+ 
+---
+ 
+## Sources
+ 
+| Account | Platform | RSS Feed |
+|---------|----------|----------|
+| @frogpicturesdaily | Instagram | `https://rss.app/feeds/rCucomTDdY1cFJtG.xml` |
+| @frogofthe | X | `https://rss.app/feeds/FSqpCA2JxIi20sHt.xml` |
+ 
+RSS feeds are provided by [rss.app](https://rss.app). To add more sources, create a new feed on rss.app and add the XML URL to the `RSS_FEEDS` list in `check_frog.py`.
  
 ---
  
@@ -70,12 +81,13 @@ Use [crontab.guru](https://crontab.guru) to help write a different schedule if n
  
 Installed automatically by the workflow — nothing to install manually.
  
-- [requests](https://requests.readthedocs.io/) — fetches the RSS feed and sends the Discord webhook
+- [requests](https://requests.readthedocs.io/) — fetches the RSS feeds and sends the Discord webhook
  
 ---
  
 ## Notes
  
-- The RSS feed is provided by [rss.app](https://rss.app) and does not require an Instagram account.
-- The script only posts if there is a new photo since the last run, so you will never get duplicates.
+- Posts are worked through oldest to newest across both sources, one per day.
+- The Discord embed footer shows which account each frog came from.
+- The script only posts one frog per day and never posts duplicates.
 - Webhooks can only post to server channels, not Discord DMs. If you want it to feel private, create a personal Discord server and point the webhook there.
