@@ -2,7 +2,7 @@ name: Daily Frog
  
 on:
   schedule:
-    - cron: '0 9 * * *'  # Every day at 9:00 AM UTC
+    - cron: '0 9 * * *'  # Every day at 9:00 AM UTC (10:00 AM Copenhagen)
   workflow_dispatch:       # Lets you trigger it manually from GitHub
  
 jobs:
@@ -12,12 +12,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
- 
-      - name: Restore last post state
-        uses: actions/cache@v4
-        with:
-          path: last_post.json
-          key: last-post-cache
  
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,7 +27,9 @@ jobs:
         run: python check_frog.py
  
       - name: Save last post state
-        uses: actions/cache@v4
-        with:
-          path: last_post.json
-          key: last-post-cache
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add last_post.json
+          git diff --staged --quiet || git commit -m "Update last post state"
+          git push
