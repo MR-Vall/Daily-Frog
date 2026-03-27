@@ -75,6 +75,7 @@ def fetch_all_items():
  
 def send_to_discord(title, image_url, link, source):
     payload = {
+        "content": "@everyone",
         "embeds": [
             {
                 "title": "🐸 Daily Frog!",
